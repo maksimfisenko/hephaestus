@@ -15,7 +15,9 @@ class Request:
     name: str
     method: str
     path: str
-    params: dict[str, Any]
+
+    path_params: dict[str, Any]
+    query_params: dict[str, Any]
     headers: dict[str, str]
     body: Any | None
 

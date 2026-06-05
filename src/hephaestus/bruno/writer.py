@@ -20,6 +20,15 @@ def sanitize_name(name: str) -> str:
 
 def request_to_bru(req: Request) -> str:
     """Convert a RequestIR into a Bruno `.bru` file format."""
+    path = req.path
+    for param in req.path_params:
+        path = path.replace(f"{{{param}}}", f"{{{{{param}}}}}")
+
+    query = ""
+    if req.query_params:
+        query_parts = [f"{k}={{{{{k}}}}}" for k in req.query_params]
+        query = "?" + "&".join(query_parts)
+
     return dedent(f"""
         meta {{
             name: {req.name}
@@ -28,7 +37,7 @@ def request_to_bru(req: Request) -> str:
 
         http {{
             method: {req.method}
-            url: {{baseUrl}}{req.path}
+            url: {{baseUrl}}{path}{query}
         }}
     """)
 

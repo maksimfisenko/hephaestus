@@ -9,7 +9,9 @@ authors = [
   { name = "Maksim Fisenko", email = "fisenkomaksim.id@gmail.com" },
 ]
 
-dependencies = []
+dependencies = [
+  "typer>=0.26.7",
+]
 
 [project.urls]
 Homepage = "https://github.com/maksimfisenko/hephaestus"
@@ -17,7 +19,7 @@ Issues = "https://github.com/maksimfisenko/hephaestus/issues"
 Repository = "https://github.com/maksimfisenko/hephaestus"
 
 [project.scripts]
-hephaestus = "hephaestus.cli:main"
+hephaestus = "hephaestus.cli:app"
 
 [build-system]
 requires = ["hatchling >= 1.30.1"]
@@ -26,5 +28,35 @@ build-backend = "hatchling.build"
 [tool.hatch.build.targets.wheel]
 packages = ["src/hephaestus"]
 
+[tool.ruff]
+indent-width = 4
+line-length = 100
+show-fixes = true
+src = ["src"]
+target-version = "py314"
+unsafe-fixes = true
+
+[tool.ruff.analyze]
+type-checking-imports = false
+
 [tool.ruff.format]
+docstring-code-format = true
+indent-style = "space"
+line-ending = "lf"
+nested-string-quote-style = "alternating"
+quote-style = "double"
+skip-magic-trailing-comma = false
 preview = true
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+lines-between-types = 0
+split-on-trailing-comma = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ty.environment]
+python-platform = "linux"
+python-version = "3.14"
+root = ["./src"]

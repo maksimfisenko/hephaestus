@@ -1,0 +1,30 @@
+[project]
+name = "hephaestus"
+version = "0.1.0"
+description = "Generate Bruno API collections from OpenAPI specifications."
+readme = "README.md"
+requires-python = ">=3.14"
+license = "MIT"
+authors = [
+  { name = "Maksim Fisenko", email = "fisenkomaksim.id@gmail.com" },
+]
+
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/maksimfisenko/hephaestus"
+Issues = "https://github.com/maksimfisenko/hephaestus/issues"
+Repository = "https://github.com/maksimfisenko/hephaestus"
+
+[project.scripts]
+hephaestus = "hephaestus.cli:main"
+
+[build-system]
+requires = ["hatchling >= 1.30.1"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/hephaestus"]
+
+[tool.ruff.format]
+preview = true

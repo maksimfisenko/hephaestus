@@ -21,6 +21,13 @@ Repository = "https://github.com/maksimfisenko/hephaestus"
 [project.scripts]
 hephaestus = "hephaestus.cli:app"
 
+[dependency-groups]
+dev = [
+  "ruff>=0.15.16",
+  "tombi>=1.1.1",
+  "ty>=0.0.44",
+]
+
 [build-system]
 requires = ["hatchling >= 1.30.1"]
 build-backend = "hatchling.build"
@@ -36,6 +43,20 @@ src = ["src"]
 target-version = "py314"
 unsafe-fixes = true
 
+[tool.ruff.lint]
+select = ["ALL"]
+ignore = [
+  "COM812",  # conflicts with formatter
+]
+
+[tool.ruff.lint.isort]
+lines-after-imports = 2
+lines-between-types = 0
+split-on-trailing-comma = true
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
 [tool.ruff.analyze]
 type-checking-imports = false
 
@@ -47,14 +68,6 @@ nested-string-quote-style = "alternating"
 quote-style = "double"
 skip-magic-trailing-comma = false
 preview = true
-
-[tool.ruff.lint.isort]
-lines-after-imports = 2
-lines-between-types = 0
-split-on-trailing-comma = true
-
-[tool.ruff.lint.pydocstyle]
-convention = "google"
 
 [tool.ty.environment]
 python-platform = "linux"

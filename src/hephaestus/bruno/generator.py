@@ -1,7 +1,17 @@
+"""Transforms OpenAPI specification into internal representation (IR)."""
+
 from hephaestus.ir.models import Collection, Request
 
 
 def build_ir(openapi_spec: dict) -> Collection:
+    """Convert OpenAPI spec into internal representation (IR).
+
+    Args:
+        openapi_spec: Parsed OpenAPI JSON object.
+
+    Returns:
+        Collection representing normalized API structure.
+    """
     info = openapi_spec.get("info", {})
     paths = openapi_spec.get("paths", {})
 
@@ -17,7 +27,7 @@ def build_ir(openapi_spec: dict) -> Collection:
                     params={},
                     headers={},
                     body=None,
-                )
+                ),
             )
 
     return Collection(

@@ -15,3 +15,9 @@ wheels/
 
 # Examples
 examples/
+
+# Test output
+out_test/
+
+# Linter
+.ruff_cache/

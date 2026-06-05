@@ -1,3 +1,5 @@
+from hephaestus.bruno.generator import build_ir
+from hephaestus.openapi.loader import load_openapi_spec
 import json
 from pathlib import Path
 import typer
@@ -11,18 +13,12 @@ def main(path: str) -> None:
     """
     Generate Bruno collection from OpenaAPI spec.
     """
-    file_path = Path(path)
+    openapi_spec = load_openapi_spec(path)
+    ir = build_ir(openapi_spec)
 
-    if not file_path.exists():
-        typer.echo(f"File not found: {file_path}.")
-        raise typer.Exit(1)
+    typer.echo(f"Collection title: {ir.title}.")
+    typer.echo(f"Requests number: {len(ir.requests)}.")
 
-    try:
-        data = json.loads(file_path.read_text())
-    except json.JSONDecodeError as e:
-        typer.echo(f"Invalid JSON: {e}.")
-        raise typer.Exit(1)
-
-    typer.echo("OpenAPI spec loaded successfully.")
-    typer.echo(f"Title: {data.get('info', {}).get('title', 'unknown')}.")
-    typer.echo(f"Paths: {len(data.get('paths', {}))}.")
+    typer.echo("First 5 requests:")
+    for r in ir.requests[:5]:
+        typer.echo(f"- {r.method} {r.path} :: {r.name}")

@@ -46,7 +46,9 @@ unsafe-fixes = true
 [tool.ruff.lint]
 select = ["ALL"]
 ignore = [
+  "ANN401",  # allow Any
   "COM812",  # conflicts with formatter
+  "PLR0911",  # allow many returns
 ]
 
 [tool.ruff.lint.isort]

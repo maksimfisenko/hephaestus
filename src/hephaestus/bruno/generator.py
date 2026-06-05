@@ -1,6 +1,7 @@
 """Transforms OpenAPI specification into internal representation (IR)."""
 
 from hephaestus.ir.models import Collection, Request
+from hephaestus.openapi.resolver import resolve_ref
 
 
 def build_ir(openapi_spec: dict) -> Collection:
@@ -36,7 +37,7 @@ def build_ir(openapi_spec: dict) -> Collection:
                 elif location == "header":
                     headers[name] = p
 
-            body = spec.get("requestBody")
+            body = extract_request_body(openapi_spec, spec)
 
             requests.append(
                 Request(
@@ -54,3 +55,27 @@ def build_ir(openapi_spec: dict) -> Collection:
         title=info.get("title", "Untitled"),
         requests=requests,
     )
+
+
+def extract_request_body(openapi: dict, spec: dict) -> dict | None:
+    """Extract a usable request body from OpenAPI requestBody."""
+    request_body = spec.get("requestBody")
+    if not request_body:
+        return None
+
+    content = request_body.get("content", {})
+    if not content:
+        return None
+
+    json_body = content.get("application/json")
+    if not json_body:
+        return None
+
+    schema = json_body.get("schema")
+    if not schema:
+        return None
+
+    if "$ref" in schema:
+        return resolve_ref(openapi, schema["$ref"])
+
+    return schema

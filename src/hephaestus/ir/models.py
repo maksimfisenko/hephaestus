@@ -19,7 +19,8 @@ class Request:
     path_params: dict[str, Any]
     query_params: dict[str, Any]
     headers: dict[str, str]
-    body: Any | None
+
+    body: dict[str, Any] | None
 
 
 @dataclass(frozen=True, slots=True, kw_only=True)

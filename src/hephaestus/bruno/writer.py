@@ -6,7 +6,7 @@ Responsible for converting IR into Bruno-compatible folder and file structure.
 import json
 from pathlib import Path
 from textwrap import dedent
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 
 if TYPE_CHECKING:
@@ -29,6 +29,16 @@ def request_to_bru(req: Request) -> str:
         query_parts = [f"{k}={{{{{k}}}}}" for k in req.query_params]
         query = "?" + "&".join(query_parts)
 
+    body_block = ""
+
+    if req.body:
+        example = schema_to_example(schema=req.body)
+        body_block = dedent(f"""
+            body:json {{
+                {json.dumps(example, indent=2)}
+            }}
+        """)
+
     return dedent(f"""
         meta {{
             name: {req.name}
@@ -39,6 +49,8 @@ def request_to_bru(req: Request) -> str:
             method: {req.method}
             url: {{baseUrl}}{path}{query}
         }}
+
+        {body_block}
     """)
 
 
@@ -70,3 +82,30 @@ def write_collection(ir: Collection, output_dir: str) -> Path:
         (root / filename).write_text(request_to_bru(req))
 
     return root
+
+
+def schema_to_example(schema: dict | None) -> Any:
+    """Very lightweight OpenAPI schema → example generator."""
+    if not isinstance(schema, dict):
+        return None
+
+    schema_type = schema.get("type")
+
+    if schema_type == "object":
+        props = schema.get("properties", {})
+        return {k: schema_to_example(v) for k, v in props.items()}
+
+    if schema_type == "array":
+        items = schema.get("items", {})
+        return [schema_to_example(items)]
+
+    if schema_type == "string":
+        return "string"
+
+    if schema_type == "integer":
+        return 0
+
+    if schema_type == "boolean":
+        return True
+
+    return None
